@@ -17,7 +17,7 @@ const App = () => {
     }, [])
 
     return (
-            <Page>
+            <Page title="Home">
                 <Layout>
                     <Layout.Section>
                         <FormLayout>
