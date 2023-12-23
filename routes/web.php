@@ -17,6 +17,3 @@ Route::middleware(['verify.shopify'])->group(function () {
     Route::view('/', 'app')->name('home');
     Route::post('products', fn () => response()->json(['msg' => 'Hello Rafid! You have done it!']));
 });
-
-
-
