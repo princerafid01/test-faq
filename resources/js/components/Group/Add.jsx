@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Card, TextField, Select, Form, FormLayout } from "@shopify/polaris";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const AddGroupCard = ({ setGroup }) => {
     const [title, setTitle] = useState("");
@@ -20,9 +20,8 @@ const AddGroupCard = ({ setGroup }) => {
     };
 
     useEffect(() => {
-        setGroup({title, description, status});
-    },[title, description, status])
-
+        setGroup({ name: title, description, status });
+    }, [title, description, status]);
 
     return (
         <Card>
@@ -32,6 +31,8 @@ const AddGroupCard = ({ setGroup }) => {
                         label="Name"
                         value={title}
                         onChange={handleTitleChange}
+                        requiredIndicator
+                        required
                     />
                     <TextField
                         label="Description"
@@ -47,6 +48,7 @@ const AddGroupCard = ({ setGroup }) => {
                         ]}
                         value={status}
                         onChange={handleStatusChange}
+                        requiredIndicator
                     />
                 </FormLayout>
             </Form>
@@ -55,9 +57,7 @@ const AddGroupCard = ({ setGroup }) => {
 };
 
 AddGroupCard.propTypes = {
-    setGroup: PropTypes.func.isRequired
+    setGroup: PropTypes.func.isRequired,
 };
 
 export default AddGroupCard;
-
-

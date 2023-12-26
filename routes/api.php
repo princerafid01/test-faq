@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\FaqController;
+use App\Http\Controllers\GroupController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +16,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['middleware' => ['verify.shopify']], function () {
+
+    Route::get('/groups', [GroupController::class, 'index'])->name('group.index');
+    Route::post('/groups', [GroupController::class, 'store'])->name('group.save');
+    Route::get('/groups/{group}', [GroupController::class, 'show'])->name('group.show');
+    Route::delete('/groups/{group}', [GroupController::class, 'destroy'])->name('group.destroy');
+
+    Route::get('/faqs/{groupid}', [FaqController::class, 'index'])->name('group.faqs');
+    Route::post('/faqs/{groupid}', [FaqController::class, 'store'])->name('group.faqs.save');
+
+    // Route::get('/settings', [\App\Http\Controllers\SettingController::class, 'page'])
+    //     ->name('setting.index');
+
+    // Route::post('/settings', [\App\Http\Controllers\SettingController::class, 'store'])
+    //     ->name('setting.store');
+
 });

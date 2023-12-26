@@ -6,23 +6,21 @@ import {
     Badge,
     useBreakpoints,
     Button,
+    ButtonGroup,
 } from "@shopify/polaris";
-import {
-    EditMajor, ViewMajor
-  } from '@shopify/polaris-icons';
+import { DeleteMajor, EditMajor } from "@shopify/polaris-icons";
+import useAxios from "../../hooks/useAxios";
+import { useEffect, useState } from "react";
+import { navigate } from "raviger";
+import useToaster from "../../hooks/usePolarisToaster";
+import useModal from "../../hooks/usePolarisModal";
 
 const GroupList = () => {
-    const groups = [
-        {
-            id: "1020",
-            order: "#1020",
-            date: "Jul 20 at 4:34pm",
-            customer: "Jaydon Stanton",
-            total: "$969.44",
-            paymentStatus: <Badge progress="complete">Paid</Badge>,
-            fulfillmentStatus: <Badge progress="incomplete">Unfulfilled</Badge>,
-        },
-    ];
+    const [groups, setGroups] = useState([]);
+    const { showToast, ToastComponent } = useToaster();
+    const [idToDelete, setIdToDelete] = useState(0);
+    const { axios } = useAxios();
+
     const resourceName = {
         singular: "group",
         plural: "groups",
@@ -31,51 +29,113 @@ const GroupList = () => {
     const { selectedResources, allResourcesSelected, handleSelectionChange } =
         useIndexResourceState(groups);
 
-    const rowMarkup = groups.map(({ id, order, date, customer }, index) => (
-        <IndexTable.Row
-            id={id}
-            key={id}
-            selected={selectedResources.includes(id)}
-            position={index}
-        >
-            <IndexTable.Cell>
-                <Text variant="bodyMd" fontWeight="bold" as="span">
-                    {order}
-                </Text>
-            </IndexTable.Cell>
-            <IndexTable.Cell>{date}</IndexTable.Cell>
-            <IndexTable.Cell>{customer}</IndexTable.Cell>
-            <IndexTable.Cell>
-                <Button icon={EditMajor}>
-                    Edit
-                </Button>
-                <Button icon={ViewMajor}>
-                    View Faqs
-                </Button>
-            </IndexTable.Cell>
-        </IndexTable.Row>
-    ));
+    const truncatedText = (text) => {
+        if (text?.length) {
+            const words = text.split(" ");
+            return words.length > 10
+                ? words.slice(0, 10).join(" ") + "..."
+                : text;
+        } else {
+            return "";
+        }
+    };
+
+    const handleDelete = async () => {
+        const { data } = await axios.delete(`/groups/${idToDelete}`);
+        setGroups((prevVal) => prevVal.filter((val) => val.id !== idToDelete));
+        closeModal();
+        showToast(data?.message, 3000);
+    };
+    const {
+        openModal,
+        closeModal,
+        ModalComponent: DeleteModalComponent,
+    } = useModal(
+        "Remove 1 Group?",
+        "This can not be undone.",
+        "Delete",
+        handleDelete,
+    );
+
+    const deleteAction = (id) => {
+        setIdToDelete(id);
+        openModal();
+    };
+
+    const rowMarkup = groups?.map(
+        ({ name, description, status, id }, index) => (
+            <IndexTable.Row
+                id={id}
+                key={id}
+                selected={selectedResources.includes(id)}
+                position={index}
+            >
+                <IndexTable.Cell>
+                    <Text variant="bodyMd" fontWeight="bold" as="span">
+                        {name}
+                    </Text>
+                </IndexTable.Cell>
+                <IndexTable.Cell>{truncatedText(description)}</IndexTable.Cell>
+                <IndexTable.Cell>
+                    {status === 1 ? (
+                        <Badge tone="success">Active</Badge>
+                    ) : (
+                        <Badge tone="critical">Inactive</Badge>
+                    )}
+                </IndexTable.Cell>
+                <IndexTable.Cell>
+                    <ButtonGroup>
+                        <Button
+                            icon={EditMajor}
+                            onClick={() => navigate(`/group-edit/${id}`)}
+                        >
+                            Edit
+                        </Button>
+                        <Button
+                            icon={DeleteMajor}
+                            onClick={() => deleteAction(id)}
+                        >
+                            Delete
+                        </Button>
+                    </ButtonGroup>
+                </IndexTable.Cell>
+            </IndexTable.Row>
+        ),
+    );
+
+    const fetchGroup = async () => {
+        const { data: groups } = await axios.get("/groups");
+        setGroups(groups);
+    };
+
+    useEffect(() => {
+        fetchGroup();
+    }, []);
 
     return (
-        <LegacyCard>
-            <IndexTable
-                condensed={useBreakpoints().smDown}
-                resourceName={resourceName}
-                itemCount={groups.length}
-                selectedItemsCount={
-                    allResourcesSelected ? "All" : selectedResources.length
-                }
-                onSelectionChange={handleSelectionChange}
-                headings={[
-                    { title: "Name" },
-                    { title: "Description" },
-                    { title: "Status" },
-                    { title: "Action",  alignment: 'middle' },
-                ]}
-            >
-                {rowMarkup}
-            </IndexTable>
-        </LegacyCard>
+        <>
+            <LegacyCard>
+                <IndexTable
+                    condensed={useBreakpoints().smDown}
+                    resourceName={resourceName}
+                    itemCount={groups.length}
+                    selectedItemsCount={
+                        allResourcesSelected ? "All" : selectedResources.length
+                    }
+                    onSelectionChange={handleSelectionChange}
+                    headings={[
+                        { title: "Name" },
+                        { title: "Description" },
+                        { title: "Status" },
+                        { title: "Action", alignment: "middle" },
+                    ]}
+                >
+                    {groups?.length > 0 && rowMarkup}
+                </IndexTable>
+            </LegacyCard>
+            {ToastComponent}
+            {DeleteModalComponent}
+        </>
     );
 };
 

@@ -3,8 +3,6 @@ import GroupList from "../components/Group/List";
 import { navigate } from "raviger";
 
 const Home = () => {
-    // const {navigate} = useNavigate
-
     return (
         <Page
             title="Faq Groups"
