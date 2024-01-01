@@ -1,0 +1,10 @@
+  trix-editor {
+      height: 200px !important;
+      overflow-y: auto;
+  }
+
+  #trix-parent-wrapper {
+      border: 1px solid rgb(118, 118, 118);
+      padding: 10px;
+      border-radius: 10px;
+  }

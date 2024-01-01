@@ -1,18 +1,17 @@
-import { Card, TextField, Select, Form, FormLayout } from "@shopify/polaris";
+import {
+    Card,
+    TextField,
+    Select,
+    Form,
+    FormLayout,
+    Layout,
+} from "@shopify/polaris";
 import PropTypes from "prop-types";
 import useDraggableList from "../../hooks/useDraggable";
 
-const EditGroupCard = ({ setGroup, group }) => {
-    const ITEMS = [
-        { id: "1", title: "Example list 1" },
-        { id: "2", title: "Example list 2" },
-        { id: "3", title: "Example list 3" },
-        { id: "4", title: "Example list 4" },
-        { id: "5", title: "Example list 5" },
-    ];
-    const { DraggableList } = useDraggableList(ITEMS);
+const EditGroupForm = ({ setGroup, group }) => {
     return (
-        <>
+        <FormLayout>
             <Card>
                 <Form>
                     <FormLayout>
@@ -46,7 +45,10 @@ const EditGroupCard = ({ setGroup, group }) => {
                             name="status"
                             options={[
                                 { label: "Active", value: "active" },
-                                { label: "Inactive", value: "inactive" },
+                                {
+                                    label: "Inactive",
+                                    value: "inactive",
+                                },
                             ]}
                             value={group.status === 1 ? "active" : "inactive"}
                             onChange={(value) =>
@@ -60,16 +62,13 @@ const EditGroupCard = ({ setGroup, group }) => {
                     </FormLayout>
                 </Form>
             </Card>
-            <Card>
-                <DraggableList />
-            </Card>
-        </>
+        </FormLayout>
     );
 };
 
-EditGroupCard.propTypes = {
+EditGroupForm.propTypes = {
     setGroup: PropTypes.func.isRequired,
     group: PropTypes.object.isRequired,
 };
 
-export default EditGroupCard;
+export default EditGroupForm;

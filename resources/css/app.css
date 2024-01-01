@@ -1,0 +1,5 @@
+label#LabelRequiredLabel::after {
+    content: '*';
+    color: var(--p-color-text-critical);
+    margin-left: var(--p-space-100);
+}

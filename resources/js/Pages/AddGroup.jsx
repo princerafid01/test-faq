@@ -16,7 +16,7 @@ const AddGroup = () => {
         try {
             const { data } = await axios.post("/groups", group);
             showToast("Group Added", 3000);
-            delayRedirectTo("/");
+            delayRedirectTo(`/group-edit/${data?.id}`);
         } catch (error) {
             console.log(error);
         }

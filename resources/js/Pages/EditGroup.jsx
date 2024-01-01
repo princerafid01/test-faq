@@ -2,15 +2,18 @@ import { Page, Layout, FormLayout, Toast, Frame } from "@shopify/polaris";
 import { navigate } from "raviger";
 import { useCallback, useEffect, useRef, useState } from "react";
 import useAxios from "../hooks/useAxios";
-import EditGroupCard from "../components/Group/Edit";
+import EditGroupForm from "../components/Group/EditForm";
 import PropTypes from "prop-types";
 import useToaster from "../hooks/usePolarisToaster";
+import FaqList from "../components/Faq/List";
+import AddFaq from "../components/Faq/Add";
 
 const EditGroup = ({ id }) => {
     const [isLoading, setIsloading] = useState(false);
     const [group, setGroup] = useState({});
     const [realGroupName, setRealGroupName] = useState("");
     const { axios } = useAxios();
+    const [faqs, setFaqs] = useState([]);
     const { showToast, ToastComponent, delayRedirectTo } = useToaster();
 
     const updateGroup = useCallback(async () => {
@@ -23,8 +26,9 @@ const EditGroup = ({ id }) => {
                 status: group.status,
             });
             setGroup(data);
+            setRealGroupName(data.name);
             showToast("Group Edited", 3000);
-            delayRedirectTo("/");
+            // delayRedirectTo("/");
         } catch (error) {
             console.log(error);
         }
@@ -36,6 +40,12 @@ const EditGroup = ({ id }) => {
         const { data } = await axios.get(`groups/${id}`);
         setRealGroupName(data?.name);
         setGroup(data);
+        fetchFaqList();
+    };
+
+    const fetchFaqList = async () => {
+        const { data } = await axios.get(`/faqs/${id}`);
+        setFaqs(data);
     };
 
     useEffect(() => {
@@ -48,22 +58,30 @@ const EditGroup = ({ id }) => {
                 title={realGroupName}
                 backAction={{ onAction: () => navigate("/") }}
                 primaryAction={{
-                    content: "Save",
-                    accessibilityLabel: "Save",
+                    content: "Save Group",
+                    accessibilityLabel: "Save Group",
                     onAction: () => updateGroup(),
                     loading: isLoading,
-                    disabled:
-                        !group.name ||
-                        group.status === undefined ||
-                        group.status === null ||
-                        group.status === "",
+                    disabled: !group.name || group.status === "",
                 }}
             >
                 <Layout>
                     <Layout.Section>
-                        <FormLayout>
-                            <EditGroupCard group={group} setGroup={setGroup} />
-                        </FormLayout>
+                        <EditGroupForm group={group} setGroup={setGroup} />
+                    </Layout.Section>
+                    <Layout.Section>
+                        {group && group.id && (
+                            <AddFaq
+                                groupId={group.id}
+                                showToast={showToast}
+                                setFaqs={setFaqs}
+                            />
+                        )}
+                    </Layout.Section>
+                    <Layout.Section>
+                        {group && faqs?.length > 0 && (
+                            <FaqList groupId={group.id} faqs={faqs} />
+                        )}
                     </Layout.Section>
                 </Layout>
             </Page>
