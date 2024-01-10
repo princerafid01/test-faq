@@ -13,6 +13,7 @@ import {
     BlockStack,
     InlineGrid,
     Text,
+    Icon,
 } from "@shopify/polaris";
 import PropTypes from "prop-types";
 import React, { useState, useCallback } from "react";
@@ -20,6 +21,7 @@ import Wysiwyg from "../Wysiwyg";
 import "trix/dist/trix.css";
 import useAxios from "../../hooks/useAxios";
 import "../../../css/app.css";
+import { CircleChevronDownMinor } from "@shopify/polaris-icons";
 
 const AddFaq = ({ groupId, showToast, setFaqs }) => {
     const { axios } = useAxios();
@@ -67,7 +69,7 @@ const AddFaq = ({ groupId, showToast, setFaqs }) => {
                                 Add Question
                             </Button>
                         </Text>
-                        {open && (
+                        {open ? (
                             <Button
                                 variant="plain"
                                 onClick={handleClose}
@@ -75,6 +77,8 @@ const AddFaq = ({ groupId, showToast, setFaqs }) => {
                             >
                                 See Less
                             </Button>
+                        ) : (
+                            <Icon source={CircleChevronDownMinor} tone="base" />
                         )}
                     </InlineGrid>
                 </BlockStack>

@@ -24,7 +24,10 @@ Route::group(['middleware' => ['verify.shopify']], function () {
     Route::delete('/groups/{group}', [GroupController::class, 'destroy'])->name('group.destroy');
 
     Route::get('/faqs/{groupid}', [FaqController::class, 'index'])->name('group.faqs');
+    Route::get('/faq/{faq}', [FaqController::class, 'show'])->name('group.faqs.show');
+    Route::delete('/faq/{faq}', [FaqController::class, 'delete'])->name('group.faqs.delete');
     Route::post('/faqs/{groupid}', [FaqController::class, 'store'])->name('group.faqs.save');
+    Route::put('/toggle-faq', [FaqController::class, 'toggle_faq'])->name('group.faq.toggle');
 
     // Route::get('/settings', [\App\Http\Controllers\SettingController::class, 'page'])
     //     ->name('setting.index');

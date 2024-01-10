@@ -7,7 +7,6 @@ import {
     Layout,
 } from "@shopify/polaris";
 import PropTypes from "prop-types";
-import useDraggableList from "../../hooks/useDraggable";
 
 const EditGroupForm = ({ setGroup, group }) => {
     return (

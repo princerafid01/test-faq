@@ -20,7 +20,7 @@ const DotsWithActionMenu = ({ actionMenus, isActive }) => {
     }, [isActive]);
 
     const activator = (
-        <div onClick={toggleActive}>
+        <div onClick={toggleActive} style={{ opacity: "1!important" }}>
             <Icon source={HorizontalDotsMinor} tone="base" />
         </div>
     );

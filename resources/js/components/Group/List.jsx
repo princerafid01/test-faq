@@ -133,8 +133,8 @@ const GroupList = () => {
                     {groups?.length > 0 && rowMarkup}
                 </IndexTable>
             </LegacyCard>
-            {ToastComponent}
-            {DeleteModalComponent}
+            <div style={{ display: "none" }}>{ToastComponent}</div>
+            <div style={{ display: "none" }}>{DeleteModalComponent}</div>
         </>
     );
 };
