@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class GroupController extends Controller
 {
@@ -13,6 +14,10 @@ class GroupController extends Controller
         $groups = Group::where([
             ['shop_id', auth()->user()->id]
         ])->get();
+
+        // $shop = Auth::user();
+        // $request = $shop->api()->rest('GET', '/admin/api/tem.json');
+        // return response()->json($request);
         return response()->json($groups);
     }
 
@@ -50,5 +55,11 @@ class GroupController extends Controller
             'message' => 'Group Deleted Successfully',
             'status' => 'Success'
         ]);
+    }
+
+    public function get_available_groups_id(): JsonResponse
+    {
+        $groups_id = Group::pluck('id');
+        return response()->json($groups_id);
     }
 }

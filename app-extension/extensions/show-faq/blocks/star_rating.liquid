@@ -1,10 +1,49 @@
-<details>
-    <summary>
-        How to beat the boss...spoiler alert !
-    </summary>
-       <p> Just aim to the red spots near his eyes</p>
-       <p>Keep shooting at these spots until the eyes open, then hit quickly both eyes with your laser beam.</p>
-</details>
+
+<h2>Changing This thing in a good variation
+
+    {% if block.settings.selectedIcon == "icon-arrow" %}
+        {% render "icon-arrow" %}
+    {% else %}
+        {% render "icon-arrow-circle" %}
+    {% endif %}
+
+</h2>
+
+
+<input type="hidden" id="faqShortcode" value="{{ block.settings.shortcode }}" />
+
+<script>
+  // Accessing Liquid variables in JavaScript
+  let available_ids = [];
+
+
+
+  // Modify the DOM based on the dynamic content
+  document.addEventListener('DOMContentLoaded', async function() {
+        const faqShortcode =  document.querySelector("#faqShortcode");
+        console.log("Main Value" , faqShortcode.value);
+
+        const response = await fetch("apps/faq-anywhere-proxy/available-groups-id");
+        available_ids = await response.json();
+        console.log("Our APi Data", available_ids);
+
+        // If anything exits from the merchant end
+        if(faqShortcode.value !== '') {
+            if(available_ids.includes(Number(faqShortcode.value))){
+                const groupResponse = await fetch(`apps/faq-anywhere-proxy/group/${faqShortcode.value}`);
+                const ourValidGroupInfo = await groupResponse.json();
+                console.log('ourValidGroupInfo' , ourValidGroupInfo);
+            } else {
+                alert('Please enter a valid Group id');
+            }
+        }
+
+        faqShortcode.addEventListener('change', function(event) {
+            // Check if the pressed key is Enter (key code 13)
+            console.log(event.target.value);
+        });
+  });
+</script>
 
 {% schema %}
 {
@@ -21,20 +60,21 @@
       "id": "selectedIcon",
       "options": [
         {
-          "value": "icon1",
-          "label": "Icon 1"
+          "value": "icon-arrow",
+          "label": "Arrow Icon Down"
         },
         {
-          "value": "icon2",
-          "label": "Icon 2"
-        },
-        {
-          "value": "icon3",
-          "label": "Icon 3"
+          "value": "icon-arrow-circle",
+          "label": "Arrow Icon Down Circle"
         }
       ],
-      "default": "icon1",
-      "info": "Choose an icon from the dropdown."
+      "default": "icon-arrow",
+      "info": "Choose a dropdown icon."
+    },
+    {
+      "type": "text",
+      "label": "Faq Shortcode",
+      "id": "shortcode"
     }
   ]
 }
