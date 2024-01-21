@@ -15,6 +15,11 @@ redirect_urls = [ "https://frank-verified-peacock.ngrok-free.app/authenticate" ]
 [webhooks]
 api_version = "2023-10"
 
+[app_proxy]
+url = "https://frank-verified-peacock.ngrok-free.app/proxy"
+subpath = "faq-anywhere-proxy"
+prefix = "apps"
+
 [pos]
 embedded = false
 

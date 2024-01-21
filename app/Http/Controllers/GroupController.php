@@ -62,4 +62,10 @@ class GroupController extends Controller
         $groups_id = Group::pluck('id');
         return response()->json($groups_id);
     }
+
+    public function groups_with_faq(Group $group): JsonResponse
+    {
+
+        return response()->json($group->load('faqs'), 200);
+    }
 }

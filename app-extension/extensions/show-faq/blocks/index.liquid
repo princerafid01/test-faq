@@ -1,0 +1,120 @@
+{% render "basic-faq" %}
+<h1>Working On here</h1>
+
+
+{% comment %} <div class="accordion" id="accordion">
+    <h1 id="faqGroupTitle">Loading... ( Please enter a valid shortcode )</h1>
+</div> {% endcomment %}
+
+
+
+{% comment %} <details>
+  <summary><h2 id="accordion-title">
+Loading...
+  {% if block.settings.selectedIcon == "icon-arrow" %}
+      {% render "icon-arrow" %}
+  {% else %}
+      {% render "icon-arrow-circle" %}
+  {% endif %}
+
+</h2></summary>
+  <p id="accordion-desc"></p>
+</details> {% endcomment %}
+
+
+
+<input type="hidden" id="shopD" value="{{ shop }}" />
+<input type="hidden" id="permanentUrl" value="{{ shop.permanent_domain }}" />
+<input type="hidden" id="faqShortcode" value="{{ block.settings.shortcode }}" />
+
+<script>
+  // Accessing Liquid variables in JavaScript
+  let available_ids = [];
+
+
+
+  // Modify the DOM based on the dynamic content
+  document.addEventListener('DOMContentLoaded', async function() {
+    console.log("Shop Details", jQuery("#shopD").val());
+    console.log("Shop Details 2", jQuery("#permanentUrl").val());
+    const shopPermanentUrl = jQuery("#permanentUrl").val();
+
+        const faqShortcode =  document.querySelector("#faqShortcode");
+        console.log("Main Value" , faqShortcode.value);
+
+        const response = await fetch(`https://${shopPermanentUrl}/apps/faq-anywhere-proxy/available-groups-id`);
+        available_ids = await response.json();
+        console.log("Our APi Data", available_ids);
+
+        // If anything exits from the merchant end
+        if(faqShortcode.value !== '') {
+            if(available_ids.includes(Number(faqShortcode.value))){
+                const groupResponse = await fetch(`https://${shopPermanentUrl}/apps/faq-anywhere-proxy/group/${faqShortcode.value}`);
+                const ourValidGroupInfo = await groupResponse.json();
+                console.log('ourValidGroupInfo' , ourValidGroupInfo);
+                document.getElementById("faqGroupTitle").textContent = ourValidGroupInfo.name;
+                let itemsHtml = '';
+                // document.getElementById("accordion-desc").textContent = ourValidGroupInfo.description;
+
+                ourValidGroupInfo?.faqs?.map((faq, index) => {
+                    itemsHtml += `
+                        <div class="accordion-item">
+                            <input type="checkbox" id="accordion${index+1}">
+                            <label for="accordion${index+1}" class="accordion-item-title"><span class="icon"></span>${faq.question}</label>
+                            <div class="accordion-item-desc">${faq.answer}</div>
+                        </div>
+                    `;
+                    return itemsHtml;
+                });
+
+                // Needs polyfill
+                jQuery(itemsHtml).insertAfter(jQuery('#faqGroupTitle'));
+                // jQuery("faqGroupTitle").insertAfter(itemsHtml);
+            } else {
+                alert('Please enter a valid Group id');
+            }
+        }
+
+        faqShortcode.addEventListener('change', function(event) {
+            // Check if the pressed key is Enter (key code 13)
+            console.log(event.target.value);
+        });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Faq",
+  "target": "section",
+  "javascript": "jquery.min.js",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Icon Dropdown Configuration"
+    },
+    {
+      "type": "select",
+      "label": "Select Icon",
+      "id": "selectedIcon",
+      "options": [
+        {
+          "value": "icon-arrow",
+          "label": "Arrow Icon Down"
+        },
+        {
+          "value": "icon-arrow-circle",
+          "label": "Arrow Icon Down Circle"
+        }
+      ],
+      "default": "icon-arrow",
+      "info": "Choose a dropdown icon."
+    },
+    {
+      "type": "text",
+      "label": "Faq Shortcode",
+      "id": "shortcode"
+    }
+  ]
+}
+{% endschema %}
+
