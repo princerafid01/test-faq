@@ -22,7 +22,6 @@
     background: {{bg}};
     color: {{gray}};
     display: flex;
-    min-height: 100vh;
   }
 
   .app-container {
@@ -132,68 +131,20 @@
     font-weight: 300;
     margin: 2em 0;
   }
+
 </style>
 
 <div class="app-main">
   <div class="app-container">
-    <h2>Frequently Asked Questions</h2>
-    <div class="accordion">
-      <div class="accordion-item">
+    <h2 id="faq-master-title"></h2>
+    <div class="accordion" id="faq-accordion">
+      <div class="accordion-item" id="faq-accordion-item">
         <button id="accordion-button-1" aria-expanded="false">
-          <span class="accordion-title">Why is the moon sometimes out during the day?</span
-          ><span class="icon" aria-hidden="true"></span>
+          <span class="accordion-title" id="faq-accordion-title">...</span>
+          <span class="icon" aria-hidden="true"></span>
         </button>
-        <div class="accordion-content">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.
-          </p>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <button id="accordion-button-2" aria-expanded="false">
-          <span class="accordion-title">Why is the sky blue?</span><span class="icon" aria-hidden="true"></span>
-        </button>
-        <div class="accordion-content">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.
-          </p>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <button id="accordion-button-3" aria-expanded="false">
-          <span class="accordion-title">Will we ever discover aliens?</span
-          ><span class="icon" aria-hidden="true"></span>
-        </button>
-        <div class="accordion-content">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.
-          </p>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <button id="accordion-button-4" aria-expanded="false">
-          <span class="accordion-title">How much does the Earth weigh?</span
-          ><span class="icon" aria-hidden="true"></span>
-        </button>
-        <div class="accordion-content">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.
-          </p>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <button id="accordion-button-5" aria-expanded="false">
-          <span class="accordion-title">How do airplanes stay up?</span><span class="icon" aria-hidden="true"></span>
-        </button>
-        <div class="accordion-content">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.
-          </p>
+        <div class="accordion-content" id="faq-accordion-content">
+          <p>.... ... ..</p>
         </div>
       </div>
     </div>
@@ -201,19 +152,53 @@
 </div>
 
 <script>
-  const items = document.querySelectorAll('.accordion button');
+  function initialLoader() {
+    const faqAccordionItems = document.querySelectorAll("#faq-accordion-item");
 
-  function toggleAccordion() {
-    const itemToggle = this.getAttribute('aria-expanded');
+    const items = document.querySelectorAll('.accordion button');
 
-    for (i = 0; i < items.length; i++) {
-      items[i].setAttribute('aria-expanded', 'false');
+    function toggleAccordion() {
+      const itemToggle = this.getAttribute('aria-expanded');
+
+      for (i = 0; i < items.length; i++) {
+        items[i].setAttribute('aria-expanded', 'false');
+      }
+
+      if (itemToggle == 'false') {
+        this.setAttribute('aria-expanded', 'true');
+      }
+
     }
 
-    if (itemToggle == 'false') {
-      this.setAttribute('aria-expanded', 'true');
-    }
+
+    items.forEach((item) => item.addEventListener('click', toggleAccordion));
+    faqAccordionItems.forEach((item) => {
+        item.style.display = 'block';
+    });
+
   }
 
-  items.forEach((item) => item.addEventListener('click', toggleAccordion));
+  function isInViewport(element) {
+    var rect = element.getBoundingClientRect();
+    var html = document.documentElement;
+    return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || html.clientHeight) &&
+      rect.right <= (window.innerWidth || html.clientWidth)
+    );
+  }
+
+//   var myInterval = setInterval(function () {
+//     if (isInViewport(document.getElementById('faq-accordion'))) {
+//       initialLoader();
+//     }
+//   }, 1000);
+
+
+  setTimeout(function() {
+    initialLoader();
+  }, 2000);
+
+  document.querySelector("#faq-accordion-item").style.display = "none";
 </script>
